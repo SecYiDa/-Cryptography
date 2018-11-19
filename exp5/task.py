@@ -1,0 +1,82 @@
+from gmpy2 import *
+from Crypto.Hash import SHA
+import sys
+import gmpy2
+r0 = 548099063082341131477253921760299949438196259240
+p = 0x800000000000000089e1855218a0e7dac38136ffafa72eda7859f2171e25e65eac698c1702578b07dc2a1076da241c76c62d374d8389ea5aeffd3226a0530cc565f3bf6b50929139ebeac04f48c3c84afb796d61e5a4f9a8fda812ab59494232c7d2b4deb50aa18ee9e132bfa85ac4374d7f9091abc3d015efc871a584471bb1
+q = 0xf4f47f05794b256174bba6e9b396a7707e563c5b
+g = 0x5958c9d3898b224b12672c0b98e06c60df923cb8bc999d119458fef538b8fa4046c8db53039db620c094c9fa077ef389b5322a559946a71903f990f1f7e0e025e2d7f7cf494aff1a0470f5b64c36b625a097f1651fe775323556fe00b3608c887892878480e99041be601a62166ca6894bdd41a7054ec89f756ba9fc95302291
+s = 857042759984254168557880549501802188789837994940
+m = '''For those that envy a MC it can be hazardous to your health
+So be friendly, a matter of life and death, just like a etch-a-sketch
+'''
+sha = SHA.new()
+sha.update(m)
+H = sha.hexdigest()
+print H
+#raw_input()
+for k in xrange(65537):
+    r = pow(g,k,p)%q
+    if r == r0:
+        print 'k =',k
+        x = (s*k - int(H,16)) *invert(r,q) %q
+        print 'x =',x    
+        sha = SHA.new()
+        sha.update("%x"%x)
+        H = sha.hexdigest()
+        print H
+        print '0954edd5e0afe5542a4adf012611a91912a3ec16'
+        break
+
+msg_1 = 'Listen for me, you better listen for me now.'
+msg_2 = 'Pure black people mon is all I mon know.'
+S_1 = 1267396447369736888040262262183731677867615804316
+S_2 = 1021643638653719618255840562522049391608552714967
+H_1 = 'a4db3de27e2db3e5ef085ced2bced91b82e0df19'
+H_2 = 'd22804c4899b522b23eda34d2137cd8cc22b9ce8'
+
+p = 0x800000000000000089e1855218a0e7dac38136ffafa72eda7859f2171e25e65eac698c1702578b07dc2a1076da241c76c62d374d8389ea5aeffd3226a0530cc565f3bf6b50929139ebeac04f48c3c84afb796d61e5a4f9a8fda812ab59494232c7d2b4deb50aa18ee9e132bfa85ac4374d7f9091abc3d015efc871a584471bb1
+q = 0xf4f47f05794b256174bba6e9b396a7707e563c5b
+
+k = ((int(H_1,16) - int(H_2,16)) * invert(S_1-S_2,q))%q
+print 'k = ',k
+r = 1105520928110492191417703162650245113664610474875
+x = (S_1 * k -int(H_1,16)) *invert(r,q) %q
+print 'x = ',x
+sha = SHA.new() 
+sha.update('%x' %(x))
+H = sha.hexdigest()
+
+print H
+print 'ca8f6f7c66fa362d40760d135b763eb8527d3d52'
+
+
+'''
+week5 homework
+
+'''
+p = 13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084171
+g = 11717829880366207009516117596335367088558084999998952205599979459063929499736583746670572176471460312928594829675428279466566527115212748467589894601965568
+h = 3239475104050450443565264378728065788649097520952449527834792452971981976143292558073856937958553180532878928001494706097394108577585732452307673444020333
+def calc1(i):
+    denominv = pow(g, i, p)
+    denom = gmpy2.invert(denominv, p)
+    tval = gmpy2.mul(h, denom)
+    retval = gmpy2.f_mod(tval, p)
+    return retval
+ 
+def calc2(i):
+    return pow(g, (2**20)*i, p)
+ 
+hasht = {}
+for i in range(0,2**20):
+    hasht[calc1(i)] = i
+for i in range(0, 2**20):
+    c2 = calc2(i)
+    if c2 in hasht:
+        print "x0: ", i
+        print "x1: ", hasht[c2]
+        break
+ 
+x = (((357984 * 2**20) + 787046)% p)
+print x
